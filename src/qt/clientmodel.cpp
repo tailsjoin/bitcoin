@@ -11,7 +11,6 @@
 #include "chainparams.h"
 #include "checkpoints.h"
 #include "clientversion.h"
-#include "main.h"
 #include "net.h"
 #include "ui_interface.h"
 #include "util.h"
@@ -117,15 +116,15 @@ void ClientModel::updateTimer()
         cachedReindexing = fReindex;
         cachedImporting = fImporting;
 
-        emit numBlocksChanged(newNumBlocks, newBlockDate);
+        Q_EMIT numBlocksChanged(newNumBlocks, newBlockDate);
     }
 
-    emit bytesChanged(getTotalBytesRecv(), getTotalBytesSent());
+    Q_EMIT bytesChanged(getTotalBytesRecv(), getTotalBytesSent());
 }
 
 void ClientModel::updateNumConnections(int numConnections)
 {
-    emit numConnectionsChanged(numConnections);
+    Q_EMIT numConnectionsChanged(numConnections);
 }
 
 void ClientModel::updateAlert(const QString &hash, int status)
@@ -138,11 +137,11 @@ void ClientModel::updateAlert(const QString &hash, int status)
         CAlert alert = CAlert::getAlertByHash(hash_256);
         if(!alert.IsNull())
         {
-            emit message(tr("Network Alert"), QString::fromStdString(alert.strStatusBar), CClientUIInterface::ICON_ERROR);
+            Q_EMIT message(tr("Network Alert"), QString::fromStdString(alert.strStatusBar), CClientUIInterface::ICON_ERROR);
         }
     }
 
-    emit alertsChanged(getStatusBarWarnings());
+    Q_EMIT alertsChanged(getStatusBarWarnings());
 }
 
 bool ClientModel::inInitialBlockDownload() const
@@ -180,6 +179,11 @@ PeerTableModel *ClientModel::getPeerTableModel()
 QString ClientModel::formatFullVersion() const
 {
     return QString::fromStdString(FormatFullVersion());
+}
+
+QString ClientModel::formatSubVersion() const
+{
+    return QString::fromStdString(strSubVersion);
 }
 
 QString ClientModel::formatBuildDate() const
